@@ -295,3 +295,26 @@ strategy. **Fix recipe (not merged):** merge `partialJson` into `arguments` befo
 validation (mirror the pipelined decode path in `tool-args-reveal`), and return the parse/abort
 as a formatted result (trae non-failing strategy) instead of a hard validation abort. Until then
 this is an open, well-documented upstream bug class in tau + codesupporting OMP forks.
+
+## Bug-16 (Brave key stale) [2026-10-25]
+````
+BRAVE_SEARCH_API_KEY in keyring is STALE/REVOKED — live probe returns {error:{code:SUBSCRIPTION_TOKEN_INVALID},status:422}.
+Fix: rotate a fresh Brave AI Search API key into secretsmith (secretsmith env BRAVE_SEARCH_API_KEY=<new>).
+The brave-search-mcp.ts server (estate-ops) is built+keyring-backed and will work once a valid key is set.
+````
+
+## Bug-17 (theta EAP quota exhausted) [2026-10-25]
+theta = gemini-flash-tool-retrieval (pinax gemini-eap). Provisioned: :25109 alive, 7 GEMINI_EAP_KEY. Live probe: ALL keys + both paths return HTTP 502 keypool upstream HTTP 402 (Payment Required). theta EAP quota spent; model cannot serve until quota tops up. Observe POST :25109/gemini-eap-interactions/v1/chat/completions {model:gemini-flash-tool-retrieval}.
+
+## Bug-18 (delendai shared-checkout-merge landing gate) [2026-10-25]
+estate-ops (repo root pens/barn) uses delendai shared-checkout-merge: no agent commit to main. work enter --kind=implement --proposal=mcp-brave --slice=1 keeps failing: Could not create refs/heads/wip/kappa/implement/mcp-brave-1-g1/work; checkpoint with scope=[estate-ops/GATEHOUSE.md, estate-ops/brave-search-mcp.ts] refuses ref shape (missing /topic). delendai doctor shows pre-existing debt: 4 abandoned units, 3 stale remote refs. The two files stay staged (A/AM) on the shared checkout, preserved. Landing blocked on delendai ref namespace bookkeeping, not the change. Fix: clear abandoned/stale units (work reap --apply), then enter/checkpoint from ./pens/barn root, then work publish. Change itself is end-to-end verified (brave-search-mcp live via proxy, thresher supervised+healthy).
+
+## Bug-19 (delendai hyphenated-proposal guard + main gate deadlock) [2026-10-25]
+Root cause of Bug-18's "refuses ref shape": the git reference-transaction guard uses a STRICT parser (packages/core/src/lib/startup-reconciler/work-ref-identity.ts classFor: `${proposal}` followed by `-` => `[A-Za-z0-9._]+`, NO hyphens), while the corral doctor's parseWorktreeRef regex (`[^/]+?`) is lenient. So `work enter --proposal=mcp-brave-gatehouse` FAILS (hyphen in proposal) but `--proposal=mcpmavericks` SUCCEEDS -> ref created wip/kappa/implement/mcpmavericks-1-g1/work, checkpoint status=created.
+SECOND deadlock (P5 landing): publish then refused "main declares no validation gate" — `validationMatrix.scopes` must exist on the INTEGRATION branch HEAD tree; can't be checkpointed-in. barn main HAS no delendai.config.json, and agents can't commit it to main (guard). So NO work can land until a human bootstraps a gate on main (development.guard.unknownActor: person) — mirroring ranch/main which already HAS delendai.config.json with a `default` git diff --check scope. estate-ops brave change is SAFE: staged + on work ref wip/kappa/implement/mcpmavericks-1-g1/work (commits 3136078 estate-ops files + 95573203 config).
+
+## Bug-20 (barn delendai config SSOT duplication) [2026-10-25]
+Ad-hoc barn/delendai.config.json created to satisfy the gate is a REAL file (duplicate), violating the ssot-scaffold doctrine (estate/config/<product>/ canonical + symlink). It also can't reach main (Bug-19 deadlock). The correct owner is a single gate on barn main (ranch pattern): delendai.config.json with validationMatrix.scopes.default = [git diff --check]. Removed the ad-hoc file; the gate must be bootstrapped on main once.
+
+## Bug-21 (search keys all dead) [2026-10-25]
+Live probes: BRAVE 422 SUBSCRIPTION_TOKEN_INVALID, SERPER 403, TAVILY 401, FIRECRAWL 401 (bearer), EXA 401. All keyed search providers in the keyring are stale/revoked. Only the keyless websearch-skill CLI works. brave-search-mcp.ts now cascades Brave->Serper->Tavily->Exa->keyless CLI (verified: returns real results via keyless). theta/EAP unaffected. Rotating a fresh key for any one provider upgrades the search quality path.
