@@ -119,6 +119,34 @@ Repointed `src/init.ts` + `src/runner.ts` to `$HOME/pens/barn/estate-ops/run-fas
 TDD shim-path tests. `delend-code-race` self-tested working (sub-2s PASS). Commit
 `42b5e0e` on toxicwind/kairos. 15 tests pass.
 
+## Bug 8 — tau and kappa load AGENTS.md by DIFFERENT rules (no single master)
+
+Discovered the two agents' instruction-loading paths so the estate can enforce a
+SINGLE authoritative AGENTS.md:
+
+- **TAU**: `packages/coding-agent/src/sdk.ts:904 discoverContextFiles` →
+  `loadContextFilesInternal` — walks UP from cwd, surfacing the AGENTS.md
+  hierarchy (monorepo support in `capability/context-file.ts`); sorted by depth
+  (farther-from-cwd first = "higher priority"). The project root's AGENTS.md is
+  included when cwd is under it.
+- **KAPPA**: `kappa-code/packages/core/src/instruction-context.ts:58` —
+  `fetoca dedupe([global.config/AGENTS.md, ...discovered])` where `discovered`
+  = `fs.up({targets:["AGENTS.md"], start, stop})` walking up from the project
+  dir. Kappa ALSO loads a **config-dir AGENTS.md** (`global.config/AGENTS.md`,
+  i.e. `~/.config/kappa/AGENTS.md`) at the FRONT (highest priority), which
+  tau does not. Kappa also has `.kilo/rules/race-gate.md` which "outranks
+  AGENTS.md".
+
+**Divergence / master gap:** tau and kappa resolve overlapping-but-not-identical
+sets. tau has no config-dir AGENTS.md hook; kappa's config-dir prepend gives it an
+estate-wide hook tau lacks. To make ONE authoritative AGENTS.md:
+
+- Point both at the same file (cwd walk-up already surfaces `/home/toxic/AGENTS.md`
+  when running under `/home/toxic`).
+- Either teach tau the config-dir prepend (kappa's pattern), or drop kappa's
+  config-dir prepend to match tau's pure walk-up. The reconcile-* + bin TDD
+  scaffold should assert the two resolve identically.
+
 ## Notes
 
 - kleio's `[object Object]` extraction bug (the 4597× fake loop) is FIXED and the
