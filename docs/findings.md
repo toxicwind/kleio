@@ -235,3 +235,16 @@ down at BOTH hops: legacy `github-mcp-host` funnel (502) AND `github-mcp-cli` in
 `credentials.request_api_access` with `reconnect` on `custom.github-mcp` (per the github-mcp
 skill Auth section — needs the owner's reconnect approval, not a raw key). Until then `gh`
 CLI + `websearch-mcp:github_search` + `forge-mcp:forge_borrow` are the working GitHub routes.
+
+## Bug 12 — SSE forward-view is inconsistent across pens (gated/404/missing) — PRIMITIVE SHIPPED
+
+Per-daemon SSE (text/event-stream) forward-view audit:
+
+- **gatehouse/thresher :25127 `/events`** → **401** (exists, authed — good, behind auth).
+- **ranch-ui** proxies **`/models/sse` + `/logs/stream/*`** (real SSE forward routes).
+- **hodos :25193, kappa-acp :25159, kleio, squawk :25147/25135, :25120, :25156 /events`** → **404** (no SSE forward-view mounted).
+
+**Fix:** shipped `pens/barn/estate-ops/sse-forward.ts` — a shared first-class SSE forward-view
+primitive (ring-buffer + `/events` replay+live with `?since=`, `/push` fan-out, monadic
+fail-forward subscriber drops). Committed `eb59f8ab` (barn). Daemons that returned 404 should
+mount it (get a consistent `/events` forward-view). Content-type verified `text/event-stream`.
