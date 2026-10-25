@@ -10,6 +10,7 @@
 **Severity:** High. **Pattern:** `REPEATED_COMMAND_LOOP`.
 
 **Evidence (kleio, real data):**
+
 ```
 REPEATED FAILURE LOOPS (by error snippet):
   [1] 261x "Tool bash not found {...}"
@@ -21,6 +22,7 @@ REPEATED FAILURE LOOPS (by error snippet):
 
 **Root-cause trace** (from `~/.tau/agent/sessions/-tmp/2026-10-24T16-58-…jsonl`, 3×
 "Tool bash not found"):
+
 - Model emits `tool=bash` with `args={command:"cd …; git status …"}` (line 462).
 - Tau answers with a toolResult whose text is literally `"Tool bash not found"` and
   echoes it on the next 2 lines (463–464).
@@ -53,7 +55,29 @@ trimming (see `helper/tokentrim.ts`) rather than hard truncation.
 **Severity:** Info. kleio reports **0 unknown event types** across both tau+kappa —
 the tau/kappa schemas are complete. No schema-extraction bug in the providers.
 
+## Bug 4 — Tau oxlint gate was broken by a parse error + never-formatted tree (FIXED)
+
+**Severity:** High (gate). `check:tools` exit-1 with zero rule-coded errors because
+`tau-extensions/packages/tau-loops/src/model-audit.ts:367` declared
+`const estate-scriptsAgentConfig` — a hyphen in a JS identifier, a hard parser error.
+Fixes applied + pushed to tau `main` (`6ad8e0dcad`):
+
+- Renamed to `estateScriptsAgentConfig`.
+- Surface `lastError` in the all-classifiers-failed warning + `const labelParts`
+  in the duplicated omp-model-router plugin trees.
+- oxfmt-normalized 287 files so `check:tools` (oxlint + oxfmt --check) is clean.
+
+## Bug 5 — tau-extensions / tau-marketplace workspace dep does not install standalone
+
+The plugin trees depend on `@tau/tau-agent@workspace:*` which is (a) not in the tau
+root `packages/*` workspace glob and (b) 404s on npm. `bun install` inside
+`tau-extensions/` fails to resolve `@tau/tau-agent`. Consequence: `@types/bun` is
+never installed there, so `packages/tau-loops/src/model-audit.ts:291` (Bun.YAML)
+throws LSP `Cannot find name 'Bun'`. Needs a workspace-link decision (make
+tau-extensions a member of the tau root workspace, or publish @tau/tau-agent).
+
 ## Notes
+
 - kleio's `[object Object]` extraction bug (the 4597× fake loop) is FIXED and the
   real failures above are now readable. See commit history for `patterns/repeated-loop.ts`.
 - These findings were surfaced purely by running the fixed kleio audit; gatings
