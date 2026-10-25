@@ -1,0 +1,20 @@
+# tau-session-audit — project bunfig (skill-local; inherits estate root config).
+# Scope: test runner is THIS skill only; toml loaded as text for schema docs.
+
+telemetry = false
+
+[install]
+linker = "hoisted"
+exact = true
+
+[loader]
+".toml" = "text"
+
+[test]
+# Only the auditor's own tests; never scan the estate workspace.
+root = "./helper"
+pathIgnorePatterns = [
+  "**/node_modules/**",
+  "**/.git/**",
+  "**/providers/schemas/**",
+]

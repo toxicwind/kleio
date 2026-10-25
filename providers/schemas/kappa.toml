@@ -1,0 +1,59 @@
+# session-audit provider schema — kappa
+# Declares the SQLite contract of the kappa session provider: every table +
+# column the loader reads, so the provider stays schema-driven.
+
+[provider]
+name = "kappa"
+label = "kappa SQLite"
+kind = "sqlite"
+
+[source]
+db = "~/.local/share/kappa/kappa-main.db"
+readonly = true
+
+[sessions]
+table = "session"
+id = "id"
+title = "title"
+directory = "directory"
+parent_id = "parent_id"
+
+[messages]
+table = "message"
+session_fk = "session_id"
+data = "data"
+
+[todos]
+table = "todo"
+session_fk = "session_id"
+content = "content"
+status = "status"
+priority = "priority"
+position = "position"
+# Status values kappa persists (completed | in_progress | ...)
+completed_values = ["completed", "done"]
+started_values = ["in_progress", "started"]
+
+[events]
+table = "event"
+aggregate = "aggregate_id"
+seq = "seq"
+type = "type"
+data = "data"
+
+[parts]
+table = "part"
+session_fk = "session_id"
+data = "data"
+
+[checks]
+intent = true
+completed = true
+anomaly = true
+patterns = true
+plan = true
+
+[notes]
+# Kappa persists todo rows natively (plan tracking), and event-sourced rows
+# (aggregate_id = session id) that carry message.updated.* payloads — the
+# provider synthesizes SessionEvents from those for the shared detectors.

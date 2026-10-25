@@ -1,0 +1,35 @@
+# session-audit provider schema — tau
+# Declares the ON-DISK + ON-WIRE contract of the tau session provider.
+# Each provider owns one .toml under providers/schemas/; loaders read it.
+
+[provider]
+name = "tau"
+label = "tau JSONL"
+kind = "jsonl"
+
+[source]
+# Directory containing *.jsonl session transcripts. PI_CODING_AGENT_DIR
+# overrides; ~/.tau/agent/sessions is primary, ~/.tau/sessions is legacy.
+dir = "~/.tau/agent/sessions"
+legacy_dir = "~/.tau/sessions"
+file_glob = "*.jsonl"
+
+[event_fields]
+# Field names used for title/model/cwd extraction from each parsed event.
+title_type = "session"
+title_field = "title"
+model_type = "model_change"
+model_field = "model"
+cwd_type = "session"
+cwd_field = "cwd"
+
+[checks]
+intent = true
+completed = true
+anomaly = true
+patterns = true
+plan = true
+
+[notes]
+# Session rows are plain JSONL events; the audit synthesizes todo ops from
+# event payloads containing op/action fields (init|done|block|...).

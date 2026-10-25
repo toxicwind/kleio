@@ -1,0 +1,10 @@
+# kleio — generated + dependency artifacts never land in git
+node_modules/
+reports/
+*.report.md
+*.bak
+*.bak-*
+.bk/
+.cache/
+tmp/
+dist/

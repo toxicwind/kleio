@@ -1,0 +1,23 @@
+{
+	"name": "kleio",
+	"version": "0.1.0",
+	"type": "module",
+	"private": true,
+	"description": "Kleio \u2014 the session historian. Provider-driven session auditor (tau + kappa) with per-provider schema TOMLs",
+	"license": "MIT",
+	"bin": {
+		"kleio": "helper/audit.ts",
+		"kleio-audit": "helper/audit.ts"
+	},
+	"dependencies": {
+		"smol-toml": "1.9.0"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"typescript": "^5.0.0"
+	},
+	"scripts": {
+		"audit": "bun run helper/audit.ts --all",
+		"test": "bun test helper/audit.test.ts"
+	}
+}
