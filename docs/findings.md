@@ -67,14 +67,45 @@ Fixes applied + pushed to tau `main` (`6ad8e0dcad`):
   in the duplicated omp-model-router plugin trees.
 - oxfmt-normalized 287 files so `check:tools` (oxlint + oxfmt --check) is clean.
 
-## Bug 5 — tau-extensions / tau-marketplace workspace dep does not install standalone
+## Bug 5 — `@tau/tau-agent` is a PHANTOM dependency (definitive root cause)
 
-The plugin trees depend on `@tau/tau-agent@workspace:*` which is (a) not in the tau
-root `packages/*` workspace glob and (b) 404s on npm. `bun install` inside
-`tau-extensions/` fails to resolve `@tau/tau-agent`. Consequence: `@types/bun` is
-never installed there, so `packages/tau-loops/src/model-audit.ts:291` (Bun.YAML)
-throws LSP `Cannot find name 'Bun'`. Needs a workspace-link decision (make
-tau-extensions a member of the tau root workspace, or publish @tau/tau-agent).
+**Root cause:** the modern tau agent package in this checkout is
+**`@tau/tau-agent-core` (`packages/agent`, version 18.3.0)**. `@tau/tau-agent`
+**does not exist** anywhere — not in the tau root `packages/*` workspace, not
+published on npm (404). Yet tau-extensions and tau-marketplace reference it:
+
+- `@tau/tau-agent@18.8.0` exact (omp-model-router) — a version **higher than
+  core's 18.3.0**, i.e. a phantom 18.8.0 that was never shipped.
+- `@tau/tau-agent@^18.0.x`, `>=16`, `*` across omp-edit-committer, omp-kafka,
+  rawhide, tau-flocksync, tau-loops.
+
+**Why it broke:** the OMP-era `@tau/tau-agent` was renamed to `@tau/tau-agent-core`
+during modernization; the extensions were never repointed and even pin a
+non-existent `18.8.0`. `bun install` in tau-extensions cannot resolve it, so
+`@types/bun` (devDep) never installs → LSP `Cannot find name 'Bun'` at
+`packages/tau-loops/src/model-audit.ts:291`.
+
+**Resolution (not done — needs API-drift mapping):** repoint every
+`@tau/tau-agent` dep across tau-extensions/tau-marketplace to
+`@tau/tau-agent-core@18.3.0` (or the alias) and fix the API drift the rename
+implied. A plain workspace alias does NOT satisfy the exact `18.8.0` pin
+(bun prefers the concrete range over a catalog alias). Do NOT add the
+extension/plugin trees to the tau root `packages` glob until the duplicate
+`@cakriwut/omp-model-router` name collision (both tau-marketplace and
+tau-extensions declare the same name) is resolved. i.e. this is a deliberate
+API-mapping task, not a lock-file/workspace-glob task.
+
+## Bug 6 — Kappa: hardcoded forgeable `alg:none` JWT as the hodos provider key (FIXED)
+
+`~/.config/kappa/kappa.jsonc` (tracked in `toxicwind/ii`, `dots/.config/kappa/`) had a
+literal committed API key: an `alg:none` JWT
+`{"sub":"flock-client","name":"corral-jwtfmt","iat":1791900000}` — header
+`{"alg":"none","typ":"JWT"}` — i.e. a token **anyone can forge** (no signature
+verification), sitting in `provider.hodos.options.apiKey`. This violates the estate
+secrets-SSOT doctrine ("a literal token in a config is a bug"). Replaced with
+`{env:FLOCK_API_KEY}`, matching the config's own `{env:...}` convention
+(FREEINFERENCE_API_KEY, NIM_PROXY_KEY). Committed `3e0f3e0` on ii `main`. Not in
+git history (added post-last-commit), so no scrub required.
 
 ## Notes
 
