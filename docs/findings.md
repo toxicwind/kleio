@@ -224,3 +224,14 @@ This is the estate's current GitHub MCP gap. Local workaround in-place and robus
 
 - `forge-mcp:forge_borrow` race GitHub prior-art — GitHub access still works while the
   server is down.
+
+**Step-up diagnosis (2026-10-25):** the skill's `github-mcp-cli` (at
+`grasp-hub/skills/02_research_intel/github-mcp/bin/github-mcp-cli`) is NOT in the
+`~/.local/bin` bin surface, and when run directly its `_ensure_session` →
+`_rpc("initialize")` throws (cannot establish the MCP session over
+`api.githubcopilot.com/mcp` with the `custom.github-mcp` OAuth connector). So GitHub MCP is
+down at BOTH hops: legacy `github-mcp-host` funnel (502) AND `github-mcp-cli` initialize.
+**Remedy:** link `github-mcp-cli` into `~/.local/bin` (bin-verify manifest entry), then run
+`credentials.request_api_access` with `reconnect` on `custom.github-mcp` (per the github-mcp
+skill Auth section — needs the owner's reconnect approval, not a raw key). Until then `gh`
+CLI + `websearch-mcp:github_search` + `forge-mcp:forge_borrow` are the working GitHub routes.
