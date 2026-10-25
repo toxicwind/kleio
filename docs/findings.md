@@ -205,3 +205,22 @@ the pre-build rollback), verified `tau acp --help` now exits 0, and **relaunched
 `tau-chute` daemon** via pitchfork (✔ started on :25111). Kappa-acp serve (:25159)
 straced idle/healthy (not flailing). This is the mechanism the estate needs to reach
 running tau via ACP.
+
+## Bug 11 — `gatehouse:github` upstream `github-mcp-host` serves 502 (dead backend)
+
+`gatehouse:github` is in state Error because its upstream
+`https://github-mcp-host.tailc9ac71.ts.net/mcp` returns **HTTP 502** (front door up,
+backend down — a route-contract divergence). Diagnosis via ssh to `github-mcp-host`
+(same box, `/home/toxic`): **no github-mcp process running**, no
+`systemd`/pitchfork unit for it, and no `github-mcp`/`github-mcp-cli` binary
+(`which` only finds `uvx`/`npx`). So the github-mcp server that used to serve `/mcp`
+on that funnel is not supervised and not running.
+
+**Fix recipe (additive, real committed launch):** run the official
+`github-mcp-server` (via `github-mcp-cli`, OAuth client-id/secret from secretsmith)
+as a supervised daemon on the node, bind the funnel to it, healthck the `/mcp` route.
+This is the estate's current GitHub MCP gap. Local workaround in-place and robust:
+`gh` CLI is keyring-authenticated (full `repo`/`workflow` scope) + `websearch-mcp:github_search`
+
+- `forge-mcp:forge_borrow` race GitHub prior-art — GitHub access still works while the
+  server is down.
