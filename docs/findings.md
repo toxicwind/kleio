@@ -107,6 +107,18 @@ secrets-SSOT doctrine ("a literal token in a config is a bug"). Replaced with
 (FREEINFERENCE_API_KEY, NIM_PROXY_KEY). Committed `3e0f3e0` on ii `main`. Not in
 git history (added post-last-commit), so no scrub required.
 
+## Bug 7 — Kairos 2s-guard hook was INERT (stale estate/bin paths) — FIXED (TDD)
+
+`kairos` (pens/olympus/products/kairos), the estate's 2-second-rule enforcer, emitted
+a bash shim hardcoding removed paths: `$HOME/estate/bin/run-fast`,
+`$HOME/estate/ranch/kairos/bin/kairos`, `/home/toxic/estate/bin/delend-code-race`.
+After the estate reorg dissolved estate/bin, RF_BIN resolved to nothing and the shim
+`return 0`'d — so the entire 2s guard hook was silent/inert for every agent command.
+Repointed `src/init.ts` + `src/runner.ts` to `$HOME/pens/barn/estate-ops/run-fast` +
+`delend-code-race` (+ `~/.local/bin/run-fast` fallback), regenerated `shim.sh`, added 3
+TDD shim-path tests. `delend-code-race` self-tested working (sub-2s PASS). Commit
+`42b5e0e` on toxicwind/kairos. 15 tests pass.
+
 ## Notes
 
 - kleio's `[object Object]` extraction bug (the 4597× fake loop) is FIXED and the
