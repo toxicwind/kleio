@@ -171,3 +171,19 @@ estate repo's workflow must account for. Remaining: audit grasp-hub, tau-extensi
 kairos, kleio, kappa workflows for GHA-hostile commands (forge/nativelink deps,
 secretsmith `--app kappa` injection, the harsh kairos 2s shim on self-hosted
 runners — the kappa repo already uses `kmake-test` tmux grids to escape it).
+
+**GHA decision matrix (evidence-gated, 2026-10-25):**
+
+| Repo      | Runner                                         | GHA-compilable                                 | Decision                                                                                                                                        |
+| --------- | ---------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| estate    | ubuntu-latest                                  | ✅ (fixed `${HOME}/estate` path, `078f9553ca`) | compilable                                                                                                                                      |
+| grasp-hub | ubuntu-latest, pure Node                       | ✅                                             | compilable                                                                                                                                      |
+| kleio     | NEW hosted `bun test` (`ca37244`)              | ✅ (was: no workflow → couldn't compile)       | added, compilable                                                                                                                               |
+| kairos    | NEW hosted `bun test` (`ad2810b`)              | ✅ (was: no workflow)                          | added, compilable                                                                                                                               |
+| tau       | PR→ubuntu-22.04; **push→tau-kata self-hosted** | PR ✅ / push ⚠️                                | **gated by design** (push needs forge/bazel remote cache + mise nativelink on the self-hosted `tau-kata`)                                       |
+| kappa     | none                                           | —                                              | needs a hosted CI (its typecheck/test are pure bun, but it has kairos 2s-shim + forge remote-cache deps → recommend `make:nativelink` or gated) |
+
+Kleio + kairos were "can't compile via GHA" only because they had no workflow —
+both are pure-Bun and now CI'd. tau push is self-hosted-only by design (heavy
+Bazel/forge). This resolves the "GitHub Actions is obtuse, some can't compile"
+question with a per-repo decided matrix.
