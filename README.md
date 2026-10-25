@@ -44,7 +44,7 @@ generator consume the same registry — no engine-specific logic anywhere else.
 
 ```bash
 # CLI (standalone or through the estate symlink)
-/home/toxic/estate/ranch/kleio/helper/audit.ts --all
+/home/toxic/pens/olympus/products/kleio/helper/audit.ts --all
 kleio --check plan          # merged plan progress (tau-derived + kappa native todos)
 kleio --check failures      # repeated failure loops by error snippet
 kleio --check patterns      # phantom-todos, failure loops, churn, leaks
