@@ -248,3 +248,20 @@ Per-daemon SSE (text/event-stream) forward-view audit:
 primitive (ring-buffer + `/events` replay+live with `?since=`, `/push` fan-out, monadic
 fail-forward subscriber drops). Committed `eb59f8ab` (barn). Daemons that returned 404 should
 mount it (get a consistent `/events` forward-view). Content-type verified `text/event-stream`.
+
+## Bug 13 — Tau: bash `Validation failed for tool` x84 + `Command aborted` x113 (partialJson vs arguments)
+
+Secondary to Bug 1 (advisor denial loop): `84x "Validation failed for tool bash:
+command must be a string"` + `113x "Command aborted"`. **Root-cause trace:** the model (via
+`tool-args-reveal`/`ToolArgsRevealController`) streams bash args as `partialJson`, and tau's
+tool-arg validation (`packages/ai/src/utils/validation.ts:2010,2129`) validates the call
+against the bash tool's schema (command/timeout) BEFORE the streamed arguments complete, so
+a partial `command` yields `Validation failed` → the executor aborts → `Command aborted`.
+
+**Adjacent prior art (phoenix):** `earendil-works/pi#3131` ("Tool validation fails when models
+use partialJson instead of arguments") and `gajae-code#4837` are the SAME open upstream class —
+both unpiked. `ghuntley/2b2b` + `bytedance/trae-agent` show the non-failing/stateful error
+strategy. **Fix recipe (not merged):** merge `partialJson` into `arguments` before bash schema
+validation (mirror the pipelined decode path in `tool-args-reveal`), and return the parse/abort
+as a formatted result (trae non-failing strategy) instead of a hard validation abort. Until then
+this is an open, well-documented upstream bug class in tau + codesupporting OMP forks.
