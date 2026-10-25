@@ -187,3 +187,21 @@ Kleio + kairos were "can't compile via GHA" only because they had no workflow �
 both are pure-Bun and now CI'd. tau push is self-hosted-only by design (heavy
 Bazel/forge). This resolves the "GitHub Actions is obtuse, some can't compile"
 question with a per-repo decided matrix.
+
+## Bug 10 — Tau ACP crashed: `ReferenceError: SWARM_SLOTS is not defined` (FIXED, relaunched)
+
+The live ACP process (`tau-chute` daemon → `chute.mjs --port 25111 -- ~/.local/bin/tau acp`)
+crashed at startup. `tau acp --help` threw `ReferenceError: SWARM_SLOTS is not
+defined` (compiled binary `/$bunfs/root/tau:344769`). Root cause:
+`packages/coding-agent/src/task/agents.ts:73` spread `...SWARM_SLOTS.map(...)` in the
+bundled agent catalog, but `SWARM_SLOTS` had **no definition anywhere** — introduced
+as a dangling WIP reference in `0527e9eea3` (2026-10-23). Evaluating the catalog is
+done by `tau acp`/`tau serve` at startup, so ACP was dead.
+
+**Fix:** define the 8 swarm slots (`swarm-01..08`) at the top of `agents.ts`; TDD
+regression asserts `loadBundledAgents()` builds + yields the slots (2 pass, tau
+`c9e92686f2`). Rebuilt linux-x64 binary, deployed to `~/.local/bin/tau` (old kept as
+the pre-build rollback), verified `tau acp --help` now exits 0, and **relaunched the
+`tau-chute` daemon** via pitchfork (✔ started on :25111). Kappa-acp serve (:25159)
+straced idle/healthy (not flailing). This is the mechanism the estate needs to reach
+running tau via ACP.
