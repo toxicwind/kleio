@@ -153,3 +153,21 @@ estate-wide hook tau lacks. To make ONE authoritative AGENTS.md:
   real failures above are now readable. See commit history for `patterns/repeated-loop.ts`.
 - These findings were surfaced purely by running the fixed kleio audit; gatings
   (the estate reorg) are tracked separately.
+
+## Bug 9 — GitHub Actions compilability: estate tests hardcoded ${HOME}/estate (FIXED)
+
+`estate/.github/workflows/estate-ci.yml` cases `bun test tests/ports.test.ts` on
+`ubuntu-latest`. `tests/ports.test.ts:29` set `process.env.ESTATE_ROOT =
+join(homedir(), "estate")` — the estate root pointed at `/home/runner/estate` on a
+GH runner where the checkout actually lives at
+`/home/runner/work/<repo>/<repo>`. So `loadEstatePorts()` read config/ports.env
+from a nonexistent path → FAIL in GHA. Fixed to `join(import.meta.dir, "..")` (the
+real repo root), 13/13 pass, estate `078f9553ca`.
+
+**Adjacent prior art (phoenix web-search):** Codex CLI-in-GHA gotchas (sandbox
+modes differ, binary-only network, secrets choreography, prompt-injection token
+exposure) and Bun-in-GHA native compile (50–70% faster) are the classes each
+estate repo's workflow must account for. Remaining: audit grasp-hub, tau-extensions,
+kairos, kleio, kappa workflows for GHA-hostile commands (forge/nativelink deps,
+secretsmith `--app kappa` injection, the harsh kairos 2s shim on self-hosted
+runners — the kappa repo already uses `kmake-test` tmux grids to escape it).
