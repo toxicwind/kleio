@@ -236,6 +236,36 @@ down at BOTH hops: legacy `github-mcp-host` funnel (502) AND `github-mcp-cli` in
 skill Auth section — needs the owner's reconnect approval, not a raw key). Until then `gh`
 CLI + `websearch-mcp:github_search` + `forge-mcp:forge_borrow` are the working GitHub routes.
 
+## Bug 14 — Orphaned/standalone keys outside the secretsmith keyring (PARTIAL FIX)
+
+Audit of `~/.secrets` fallback vs `secretsmith env` keyring found **4 orphaned secret holders**
+(keys in `.secrets`, absent from the keyring SSOT):
+
+- **ATRIA_API_KEY, BROWSERLESS_TOKEN, HUGGING_FACE_HUB_TOKEN, SQUAWK_FEED_TOKEN**.
+- (DEDI_USE_PASSWORD_AUTH excluded: a boolean config flag, not a secret.)
+
+**Fix applied:** promoted all 4 into the secretsmith keyring (`secretsmith set`, values never
+printed/logged, tagged service=estate) via a reusable `promote_orphan_secrets.sh`. Verified
+4/4 now resolve from `secretsmith env`. A broader `estate/config|pitchfork.toml` plain-text
+literal scan found **no additional live hardcoded tokens** (hits were historical session-log /
+webcache echo + one vendored plugin `completion-gate.test.js` fixture), so 4 orphans was the
+real standalone gap.
+
+**Next (Todo-0 remainder):** expose secretsmith itself as a **full MCP** (add / get / env /
+list tools over MCP), documented via a guide, so any daemon/agent can read/write keys through
+the keyring primitive instead of holding its own copy. BROWSERLESS_TOKEN is a first-class
+keyring secret (browser-register capability is authorized while the ref is keyring-backed).
+
+## Bug 15 — Background/output truncation in agent shells (FIXED via cmdlog)
+
+The `desktop-commander`/background tool's "Initial output" chunk capture is bounded, so
+long/multi-command output was silently missed (`⏳ Process is running. Use read_process_output`).
+**Fix:** `pens/barn/estate-ops/cmdlog.ts` tees FULL command output to an unbounded file
+(`~/.hardened-reorg/cmdlog-<n>.out`) while printing a bounded preview + the file path; the agent
+then reads the full capture from the file. TDD contract test asserts 1500 `seq` lines are fully
+persisted despite a 5-line preview, and exit code = child's real code (2 pass). Linked to the bin
+surface. Commit `9e1564c1` (barn).
+
 ## Bug 12 — SSE forward-view is inconsistent across pens (gated/404/missing) — PRIMITIVE SHIPPED
 
 Per-daemon SSE (text/event-stream) forward-view audit:
