@@ -1,6 +1,7 @@
 // tau-session-audit — Pattern Registry
 
 import { adhdStreamCollapseDetector } from "./adhd-stream-collapse";
+import { depthSinkDetector } from "./depth-sink";
 import { modelChurnDetector } from "./model-churn";
 import { repeatedLoopDetector } from "./repeated-loop";
 import { thinkingLeakDetector } from "./thinking-leak";
@@ -13,6 +14,7 @@ import type {
 } from "./types";
 
 export { adhdStreamCollapseDetector } from "./adhd-stream-collapse";
+export { depthSinkDetector, pathDepth } from "./depth-sink";
 export { modelChurnDetector } from "./model-churn";
 export { repeatedLoopDetector } from "./repeated-loop";
 export { thinkingLeakDetector } from "./thinking-leak";
@@ -25,6 +27,7 @@ const ALL_DETECTORS: PatternDetector[] = [
 	repeatedLoopDetector,
 	modelChurnDetector,
 	adhdStreamCollapseDetector,
+	depthSinkDetector,
 ];
 
 export function getAllDetectors(): PatternDetector[] {
