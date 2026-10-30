@@ -111,7 +111,7 @@ git history (added post-last-commit), so no scrub required.
 
 `kairos` (pens/olympus/products/kairos), the estate's 2-second-rule enforcer, emitted
 a bash shim hardcoding removed paths: `$HOME/estate/bin/run-fast`,
-`$HOME/estate/ranch/kairos/bin/kairos`, `/home/toxic/estate/bin/delend-code-race`.
+`$HOME/estate/ranch/kairos/bin/kairos`, `/home/toxic/pens/estate/bin/delend-code-race`.
 After the estate reorg dissolved estate/bin, RF_BIN resolved to nothing and the shim
 `return 0`'d — so the entire 2s guard hook was silent/inert for every agent command.
 Repointed `src/init.ts` + `src/runner.ts` to `$HOME/pens/barn/estate-ops/run-fast` +
