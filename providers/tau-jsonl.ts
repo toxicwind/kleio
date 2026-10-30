@@ -9,14 +9,21 @@ import { runAllPatterns } from "../patterns/index";
 import type { SessionEvent } from "../patterns/types";
 import type { ProviderSpec, Session } from "./types";
 
-const SESSIONS_DIR = process.env.PI_CODING_AGENT_DIR
-	? join(process.env.PI_CODING_AGENT_DIR, "sessions")
-	: existsSync(
-				join(process.env.HOME || "/home/toxic", ".tau", "agent", "sessions"),
-			)
-		? join(process.env.HOME || "/home/toxic", ".tau", "agent", "sessions")
-		: join(process.env.HOME || "/home/toxic", ".tau", "sessions");
+const HOME = process.env.HOME || "/home/toxic";
+function resolveTauSessionsDir(): string {
+	const raw = process.env.PI_CODING_AGENT_DIR;
+	if (raw) {
+		const p = join(raw, "sessions");
+		if (existsSync(p)) return p;
+		const homeP = join(HOME, raw, "sessions");
+		if (existsSync(homeP)) return homeP;
+	}
+	const agentDir = join(HOME, ".tau", "agent", "sessions");
+	if (existsSync(agentDir)) return agentDir;
+	return join(HOME, ".tau", "sessions");
+}
 
+export const SESSIONS_DIR = resolveTauSessionsDir();
 export const SESSIONS_ROOT = SESSIONS_DIR;
 
 function extractTitle(events: SessionEvent[]): string {

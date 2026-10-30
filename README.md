@@ -50,7 +50,7 @@ kleio --check failures      # repeated failure loops by error snippet
 kleio --check patterns      # phantom-todos, failure loops, churn, leaks
 kleio --report --out=reports/today.md
 
-# MCP (through gatehouse :25127)
+# MCP (through thresher :25127)
 #   kleio_plan | kleio_failures | kleio_report | kleio_search | kleio_health
 ```
 
@@ -71,7 +71,7 @@ stays declarative — mirrored after the code-patterns provider architecture.
 - [x] per-provider schema TOMLs
 - [x] merged plan progress (kappa native todos)
 - [x] shared pattern library firing on both engines
-- [x] MCP server (5 read-only tools) + gatehouse registration
+- [x] MCP server (5 read-only tools) + thresher registration
 - [ ] future: codex / opencode / claude-code session providers
 
 ## License

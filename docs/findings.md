@@ -206,9 +206,9 @@ the pre-build rollback), verified `tau acp --help` now exits 0, and **relaunched
 straced idle/healthy (not flailing). This is the mechanism the estate needs to reach
 running tau via ACP.
 
-## Bug 11 — `gatehouse:github` upstream `github-mcp-host` serves 502 (dead backend)
+## Bug 11 — `thresher:github` upstream `github-mcp-host` serves 502 (dead backend)
 
-`gatehouse:github` is in state Error because its upstream
+`thresher:github` is in state Error because its upstream
 `https://github-mcp-host.tailc9ac71.ts.net/mcp` returns **HTTP 502** (front door up,
 backend down — a route-contract divergence). Diagnosis via ssh to `github-mcp-host`
 (same box, `/home/toxic`): **no github-mcp process running**, no
@@ -270,7 +270,7 @@ surface. Commit `9e1564c1` (barn).
 
 Per-daemon SSE (text/event-stream) forward-view audit:
 
-- **gatehouse/thresher :25127 `/events`** → **401** (exists, authed — good, behind auth).
+- **thresher/thresher :25127 `/events`** → **401** (exists, authed — good, behind auth).
 - **ranch-ui** proxies **`/models/sse` + `/logs/stream/*`** (real SSE forward routes).
 - **hodos :25193, kappa-acp :25159, kleio, squawk :25147/25135, :25120, :25156 /events`** → **404** (no SSE forward-view mounted).
 
@@ -307,10 +307,10 @@ The brave-search-mcp.ts server (estate-ops) is built+keyring-backed and will wor
 theta = gemini-flash-tool-retrieval (pinax gemini-eap). Provisioned: :25109 alive, 7 GEMINI_EAP_KEY. Live probe: ALL keys + both paths return HTTP 502 keypool upstream HTTP 402 (Payment Required). theta EAP quota spent; model cannot serve until quota tops up. Observe POST :25109/gemini-eap-interactions/v1/chat/completions {model:gemini-flash-tool-retrieval}.
 
 ## Bug-18 (delendai shared-checkout-merge landing gate) [2026-10-25]
-estate-ops (repo root pens/barn) uses delendai shared-checkout-merge: no agent commit to main. work enter --kind=implement --proposal=mcp-brave --slice=1 keeps failing: Could not create refs/heads/wip/kappa/implement/mcp-brave-1-g1/work; checkpoint with scope=[estate-ops/GATEHOUSE.md, estate-ops/brave-search-mcp.ts] refuses ref shape (missing /topic). delendai doctor shows pre-existing debt: 4 abandoned units, 3 stale remote refs. The two files stay staged (A/AM) on the shared checkout, preserved. Landing blocked on delendai ref namespace bookkeeping, not the change. Fix: clear abandoned/stale units (work reap --apply), then enter/checkpoint from ./pens/barn root, then work publish. Change itself is end-to-end verified (brave-search-mcp live via proxy, thresher supervised+healthy).
+estate-ops (repo root pens/barn) uses delendai shared-checkout-merge: no agent commit to main. work enter --kind=implement --proposal=mcp-brave --slice=1 keeps failing: Could not create refs/heads/wip/kappa/implement/mcp-brave-1-g1/work; checkpoint with scope=[estate-ops/THRESHER.md, estate-ops/brave-search-mcp.ts] refuses ref shape (missing /topic). delendai doctor shows pre-existing debt: 4 abandoned units, 3 stale remote refs. The two files stay staged (A/AM) on the shared checkout, preserved. Landing blocked on delendai ref namespace bookkeeping, not the change. Fix: clear abandoned/stale units (work reap --apply), then enter/checkpoint from ./pens/barn root, then work publish. Change itself is end-to-end verified (brave-search-mcp live via proxy, thresher supervised+healthy).
 
 ## Bug-19 (delendai hyphenated-proposal guard + main gate deadlock) [2026-10-25]
-Root cause of Bug-18's "refuses ref shape": the git reference-transaction guard uses a STRICT parser (packages/core/src/lib/startup-reconciler/work-ref-identity.ts classFor: `${proposal}` followed by `-` => `[A-Za-z0-9._]+`, NO hyphens), while the corral doctor's parseWorktreeRef regex (`[^/]+?`) is lenient. So `work enter --proposal=mcp-brave-gatehouse` FAILS (hyphen in proposal) but `--proposal=mcpmavericks` SUCCEEDS -> ref created wip/kappa/implement/mcpmavericks-1-g1/work, checkpoint status=created.
+Root cause of Bug-18's "refuses ref shape": the git reference-transaction guard uses a STRICT parser (packages/core/src/lib/startup-reconciler/work-ref-identity.ts classFor: `${proposal}` followed by `-` => `[A-Za-z0-9._]+`, NO hyphens), while the corral doctor's parseWorktreeRef regex (`[^/]+?`) is lenient. So `work enter --proposal=mcp-brave-thresher` FAILS (hyphen in proposal) but `--proposal=mcpmavericks` SUCCEEDS -> ref created wip/kappa/implement/mcpmavericks-1-g1/work, checkpoint status=created.
 SECOND deadlock (P5 landing): publish then refused "main declares no validation gate" — `validationMatrix.scopes` must exist on the INTEGRATION branch HEAD tree; can't be checkpointed-in. barn main HAS no delendai.config.json, and agents can't commit it to main (guard). So NO work can land until a human bootstraps a gate on main (development.guard.unknownActor: person) — mirroring ranch/main which already HAS delendai.config.json with a `default` git diff --check scope. estate-ops brave change is SAFE: staged + on work ref wip/kappa/implement/mcpmavericks-1-g1/work (commits 3136078 estate-ops files + 95573203 config).
 
 ## Bug-20 (barn delendai config SSOT duplication) [2026-10-25]
@@ -320,9 +320,9 @@ Ad-hoc barn/delendai.config.json created to satisfy the gate is a REAL file (dup
 Live probes: BRAVE 422 SUBSCRIPTION_TOKEN_INVALID, SERPER 403, TAVILY 401, FIRECRAWL 401 (bearer), EXA 401. All keyed search providers in the keyring are stale/revoked. Only the keyless websearch-skill CLI works. brave-search-mcp.ts now cascades Brave->Serper->Tavily->Exa->keyless CLI (verified: returns real results via keyless). theta/EAP unaffected. Rotating a fresh key for any one provider upgrades the search quality path.
 
 ## Bug-22 (auto-model-fallback — correct SSOT is pinax+hodos, NOT thresher env) [2026-10-25]
-Agentic misdirection from gatehouse auto-agent-selector showing only claude-cli: that tool reads process.env.*_API_KEY in the delendai __serve child, which mcpproxy-go spawns with a SCRUBBED secureenv (AllowedSystemVars/CustomVars only; provider keys stripped). Attempted thresher-serve.ts env injection + delendai-env wrapper + mcp_config env block — ALL REVERTED as the wrong surface.
+Agentic misdirection from thresher auto-agent-selector showing only claude-cli: that tool reads process.env.*_API_KEY in the delendai __serve child, which mcpproxy-go spawns with a SCRUBBED secureenv (AllowedSystemVars/CustomVars only; provider keys stripped). Attempted thresher-serve.ts env injection + delendai-env wrapper + mcp_config env block — ALL REVERTED as the wrong surface.
 TRUE SSOT per AGENTS.md MODEL IDENTITY CHAIN: pinax generates models.yml (estate/config/tau/agent/models.yml, "DO NOT EDIT BY HAND, regenerate from mesh/catalog/src/data.ts") which ALREADY declares providers.flock = hodos :25193 (apiKey "!cat /home/toxic/.tau/flock.key", present), freeinference (FREEINFERENCE_API_KEY, verified 200), deepseek/nvidia/groq/moonshot/github/parasail, and google(theta) models gemini-*-flash with contextWindow:1000000 (1M).
-LIVE PROBED 200: freeinference qwen3.6-35b/glm-5.3-flash/minimax-m3/deepseek-v4-flash; hodos/flock nvidia-nemotron-3.5-super-vl-120b (real PONG); mistral codestral/ministral. theta(EAP) 402 (Bug-17). The 3+ provider fallback set EXISTS in pinax; auto-model-fallback works through pinax modelRoles→providers, key resolved by tau runtime from env/!cat — NOT gatehouse. A transient duplicate SSOT (estate/config/models-ssot/models.yml) was authored then REMOVED (competed with pinax).
+LIVE PROBED 200: freeinference qwen3.6-35b/glm-5.3-flash/minimax-m3/deepseek-v4-flash; hodos/flock nvidia-nemotron-3.5-super-vl-120b (real PONG); mistral codestral/ministral. theta(EAP) 402 (Bug-17). The 3+ provider fallback set EXISTS in pinax; auto-model-fallback works through pinax modelRoles→providers, key resolved by tau runtime from env/!cat — NOT thresher. A transient duplicate SSOT (estate/config/models-ssot/models.yml) was authored then REMOVED (competed with pinax).
 
 ## Bug-23 (delendai guard stale path blocks ALL commits/pushes) [2026-10-25]
 `.local/bin/delendai` runner = bun corral/delendai/build/packages/cli/0.1.1/index.js. The built CLI's guard (commit-msg + pre-push hooks in pinax/ranch/estate-ops) resolves its entry to the RELOCATED `estate/ranch/borrowed/delendai/packages/cli/src/index.ts` -> "Module not found", so EVERY delendai-guarded repo's commit/push fails with that error. Worked around with `git commit --no-verify`/`git push --no-verify` (verified content, tests 87 green). Root cause is a stale bake of the old pre-reorg path inside the delendai built CLI's workspace-root resolution (source refs live in delendai .git/hooks + bin/delendai-shim/main.go). FIX (durable, not monkeypatch): rebuild delendai CLI from source (`bun build` corral/delendai) so the built index.js re-resolves relative to its repo; otherwise the guard stays broken for every repo. This is the same bookkeeping class as Bug-19/20.
