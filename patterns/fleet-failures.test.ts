@@ -69,7 +69,7 @@ describe("ghost-path detector", () => {
 				data: {
 					toolName: "read",
 					intent: "reading oracle intake",
-					args: { path: "/home/toxic/pens/estate/ranch/squawk/oracle/bin/post_intake.py" },
+					args: { path: "/home/toxic/estate/ranch/squawk/oracle/bin/post_intake.py" },
 				},
 			}),
 		];
