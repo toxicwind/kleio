@@ -4,7 +4,7 @@
 
 import type { PatternMatch, SessionEvent } from "../patterns/types";
 
-export type SessionSource = "tau" | "kappa";
+export type SessionSource = "tau" | "kappa" | "kilo";
 
 /** Per-session plan progress. tau derives it from todo events; kappa reads its native `todo` table. */
 export interface PlanProgress {

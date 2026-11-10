@@ -1,0 +1,60 @@
+# session-audit provider schema — kilo
+# Declares the SQLite contract of the kilo session provider. Kilo's schema is
+# a near-twin of kappa's (same todo/event table shapes), so this mirrors
+# kappa.toml with the kilo db path. Added live 2026-11-04 (kilo session audit).
+
+[provider]
+name = "kilo"
+label = "kilo SQLite"
+kind = "sqlite"
+
+[source]
+db = "~/.local/share/kilo/kilo.db"
+readonly = true
+
+[sessions]
+table = "session"
+id = "id"
+title = "title"
+directory = "directory"
+parent_id = "parent_id"
+
+[messages]
+table = "message"
+session_fk = "session_id"
+data = "data"
+
+[todos]
+table = "todo"
+session_fk = "session_id"
+content = "content"
+status = "status"
+priority = "priority"
+position = "position"
+# Status values kilo persists (completed | in_progress | pending)
+completed_values = ["completed", "done"]
+started_values = ["in_progress", "started"]
+
+[events]
+table = "event"
+aggregate = "aggregate_id"
+seq = "seq"
+type = "type"
+data = "data"
+
+[parts]
+table = "part"
+session_fk = "session_id"
+data = "data"
+
+[checks]
+intent = true
+completed = true
+anomaly = true
+patterns = true
+plan = true
+
+[notes]
+# Kilo persists todo rows natively (plan tracking) and event-sourced rows
+# (aggregate_id = session id) — same shape as kappa, so the kappa provider
+# logic applies verbatim with only the db path differing.

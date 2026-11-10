@@ -3,6 +3,7 @@
 // single surface. Add a provider by dropping a module + one registry row.
 
 import { kappaProvider } from "./kappa";
+import { kiloProvider } from "./kilo";
 import { tauProvider } from "./tau-jsonl";
 import type {
 	ProviderSpec,
@@ -14,6 +15,7 @@ import type {
 export const SESSION_PROVIDERS: Record<SessionSource, ProviderSpec> = {
 	tau: tauProvider,
 	kappa: kappaProvider,
+	kilo: kiloProvider,
 };
 
 export const PROVIDERS: ProviderSpec[] = Object.values(SESSION_PROVIDERS);
@@ -36,7 +38,7 @@ export function loadAllSessions(): ResolvedSession[] {
 
 /** Load sessions from a specific source (empty filters = all). */
 export function loadSessionsFrom(
-	sources: SessionSource[] = ["tau", "kappa"],
+	sources: SessionSource[] = ["tau", "kappa", "kilo"],
 ): ResolvedSession[] {
 	const wanted = new Set(sources);
 	return loadAllSessions().filter((s) => wanted.has(s.source));
