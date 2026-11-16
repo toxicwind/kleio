@@ -1,8 +1,8 @@
-// Pattern: Ghost Estate Path
-// Detects tool calls that reference /home/toxic/pens/estate/* — the retired ghost
-// checkout. The SSOT is /home/toxic/pens/estate (estate single-truth lease,
-// anomaly #48). Anything rooted at /home/toxic/estate is a lease violation:
-// edits there are silently lost because pitchfork loads pens/estate.
+// Pattern: Ghost Pens Path
+// Detects tool calls that reference /home/toxic/pens/Pens/* — the retired ghost
+// checkout. The SSOT is /home/toxic/pens/Pens (Pens single-truth lease,
+// anomaly #48). Anything rooted at /home/toxic/pens/Pens is a lease violation:
+// edits there are silently lost because pitchfork loads pens/Pens.
 
 import type {
 	PatternDetector,
@@ -10,7 +10,7 @@ import type {
 	SessionEvent,
 } from "./types";
 
-const GHOST_RE = /\/home\/toxic\/estate(?!\/pens)/;
+const GHOST_RE = /\/home\/toxic\/Pens(?!\/pens)/;
 
 function eventText(e: SessionEvent): string {
 	const parts: string[] = [];
@@ -36,9 +36,9 @@ function eventText(e: SessionEvent): string {
 
 export const ghostPathDetector: PatternDetector = {
 	id: "ghost-path",
-	name: "Ghost Estate Path Reference",
+	name: "Ghost Pens Path Reference",
 	description:
-		"Detects tool calls referencing /home/toxic/pens/estate/* (the retired ghost checkout) instead of the /home/toxic/pens/estate SSOT.",
+		"Detects tool calls referencing /home/toxic/pens/Pens/* (the retired ghost checkout) instead of the /home/toxic/pens/Pens SSOT.",
 
 	detect(events: SessionEvent[], context?: SessionContext): PatternMatch[] {
 		const matches: PatternMatch[] = [];
@@ -53,9 +53,9 @@ export const ghostPathDetector: PatternDetector = {
 			if (m) {
 				matches.push({
 					patternId: "GHOST_ESTATE_PATH",
-					name: "Ghost /home/toxic/estate Path (lease violation)",
+					name: "Ghost /home/toxic/pens/Pens Path (lease violation)",
 					severity: "high",
-					description: `Model ${model} targeted the retired ghost checkout at /home/toxic/estate. Edits there are silently lost (pitchfork loads pens/estate). Repoint to /home/toxic/pens/estate.`,
+					description: `Model ${model} targeted the retired ghost checkout at /home/toxic/pens/Pens. Edits there are silently lost (pitchfork loads pens/Pens). Repoint to /home/toxic/pens/Pens.`,
 					details: {
 						eventIndex: i,
 						model,

@@ -61,7 +61,7 @@ describe("eval-loop detector", () => {
 });
 
 describe("ghost-path detector", () => {
-	it("flags tool args/content referencing the /home/toxic/estate ghost lease path", () => {
+	it("flags tool args/content referencing the /home/toxic/pens/Pens ghost lease path", () => {
 		const events: SessionEvent[] = [
 			ev({
 				type: "custom",
@@ -69,7 +69,7 @@ describe("ghost-path detector", () => {
 				data: {
 					toolName: "read",
 					intent: "reading oracle intake",
-					args: { path: "/home/toxic/estate/ranch/squawk/oracle/bin/post_intake.py" },
+					args: { path: "/home/toxic/pens/Pens/ranch/squawk/oracle/bin/post_intake.py" },
 				},
 			}),
 		];
@@ -79,7 +79,7 @@ describe("ghost-path detector", () => {
 		expect(matches[0]!.severity).toBe("high");
 	});
 
-	it("ignores the legitimate /home/toxic/pens/estate SSOT", () => {
+	it("ignores the legitimate /home/toxic/pens/Pens SSOT", () => {
 		const events: SessionEvent[] = [
 			ev({
 				type: "custom",
@@ -87,7 +87,7 @@ describe("ghost-path detector", () => {
 				data: {
 					toolName: "read",
 					intent: "reading pitchfork",
-					args: { path: "/home/toxic/pens/estate/pitchfork.toml" },
+					args: { path: "/home/toxic/pens/Pens/pitchfork.toml" },
 				},
 			}),
 		];

@@ -15,15 +15,15 @@
 
 | Pattern Name | Severity | Detections | Description |
 |---|:---:|:---:|---|
-| **Repeated Tool Failure Loop** | 🟠 HIGH | `372` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Ghost /home/toxic/estate Path (lease violation)** | 🟠 HIGH | `18578` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Rapid Consecutive Todo Done Flurry Without Intervening Work** | 🔴 CRITICAL | `285` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Todo Marked Done Immediately After Tool Failure** | 🟠 HIGH | `59` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Unexecuted Scratchpad or Pseudo-Tool Syntax in Chat** | 🟠 HIGH | `7` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **High Model Churn Session** | 🟠 HIGH | `97` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Eval Loop Flailing (repeated aborts, no progress)** | 🟠 HIGH | `2` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Message with No Execution Tools Followed by Todo Done** | 🔴 CRITICAL | `17` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
-| **Defensive Completion Escape After User Brain-Dump / Clarifications** | 🟠 HIGH | `1` | Documented in [`patterns/`](https://github.com/toxicwind/estate/blob/main/skills/tau-session-audit/patterns/) |
+| **Repeated Tool Failure Loop** | 🟠 HIGH | `372` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Ghost /home/toxic/pens/Pens Path (lease violation)** | 🟠 HIGH | `18578` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Rapid Consecutive Todo Done Flurry Without Intervening Work** | 🔴 CRITICAL | `285` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Todo Marked Done Immediately After Tool Failure** | 🟠 HIGH | `59` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Unexecuted Scratchpad or Pseudo-Tool Syntax in Chat** | 🟠 HIGH | `7` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **High Model Churn Session** | 🟠 HIGH | `97` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Eval Loop Flailing (repeated aborts, no progress)** | 🟠 HIGH | `2` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Message with No Execution Tools Followed by Todo Done** | 🔴 CRITICAL | `17` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
+| **Defensive Completion Escape After User Brain-Dump / Clarifications** | 🟠 HIGH | `1` | Documented in [`patterns/`](https://github.com/toxicwind/Pens/blob/main/skills/tau-session-audit/patterns/) |
 
 ### 1. The Phantom Todo Completion (Primary Smoking Gun)
 
@@ -36,16 +36,16 @@ Models repeatedly demonstrated the following failure mode:
 
 | Session File | Model | Max Consecutive Todos | Total Tools | Details |
 |---|---|:---:|:---:|---|
-| [`-tmp/2026-10-28T09-48-18-108Z_01a181e9-133c-77f4-a44d-0d9f6757c0a8.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-28T09-48-18-108Z_01a181e9-133c-77f4-a44d-0d9f6757c0a8.jsonl) | `nvidia/nvidia/nemotron-3-ultra-550b-a55b` | **117** | 5017 | Intent: *NVIDIA config / model setup* |
-| [`-tmp/2026-10-23T22-25-26-764Z_01a16ade-76ec-741f-ae18-35b3107fe09d.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-23T22-25-26-764Z_01a16ade-76ec-741f-ae18-35b3107fe09d.jsonl) | `freeinference/glm-5.3-flash` | **112** | 4655 | Intent: *General agent work* |
-| [`-tmp/2026-10-30T02-25-24-800Z_01a18aa0-5140-701e-b8be-15334a1ce009.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-30T02-25-24-800Z_01a18aa0-5140-701e-b8be-15334a1ce009.jsonl) | `freeinference/glm-5.3-flash` | **102** | 7898 | Intent: *General agent work* |
-| [`-tmp/2026-10-28T20-58-57-421Z_01a1844f-140d-72d0-84c9-0b33a8a613c3.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-28T20-58-57-421Z_01a1844f-140d-72d0-84c9-0b33a8a613c3.jsonl) | `freeinference/deepseek-v4-flash` | **82** | 2782 | Intent: *General agent work* |
-| [`-tmp/2026-10-28T08-10-14-943Z_01a1818f-4e1f-712c-b8f1-e377943e39aa.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-28T08-10-14-943Z_01a1818f-4e1f-712c-b8f1-e377943e39aa.jsonl) | `nvidia/nvidia/nemotron-3-ultra-550b-a55b` | **78** | 3912 | Intent: *NVIDIA config / model setup* |
-| [`-tmp/2026-10-27T23-18-31-962Z_01a17fa8-811a-710c-94de-5deb4197fe60.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-27T23-18-31-962Z_01a17fa8-811a-710c-94de-5deb4197fe60.jsonl) | `rhodochrosite/models/gemini-flash-tool-retrieval` | **56** | 5546 | Intent: *General agent work* |
-| [`-tmp/2026-10-21T04-29-39-593Z_01a15cb8-d589-7499-beab-3b41ace5200e.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-21T04-29-39-593Z_01a15cb8-d589-7499-beab-3b41ace5200e.jsonl) | `google-antigravity/claude-opus-5-5-high` | **40** | 3667 | Intent: *General agent work* |
-| [`-tmp/2026-10-24T16-58-01-451Z_01a16ed9-0f6b-74de-8f2c-1226eb3104b0.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-24T16-58-01-451Z_01a16ed9-0f6b-74de-8f2c-1226eb3104b0.jsonl) | `freeinference/qwen3.6-35b` | **35** | 1084 | Intent: *General agent work* |
-| [`-tmp/2026-10-11T21-55-16-455Z_01a12cf6-8767-735c-82dd-7668788e3520.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-11T21-55-16-455Z_01a12cf6-8767-735c-82dd-7668788e3520.jsonl) | `cohere/command-a-plus-05-2026` | **33** | 1979 | Intent: *General agent work* |
-| [`-tmp/2026-10-30T22-00-43-302Z_01a18ed4-5826-7720-bf7c-741a608ff09a.jsonl`](https://github.com/toxicwind/estate/blob/main/config/tau/agent/sessions/-tmp/2026-10-30T22-00-43-302Z_01a18ed4-5826-7720-bf7c-741a608ff09a.jsonl) | `openrouter/dots-studio/dots-3-note-preview:free` | **31** | 1534 | Intent: *DB setup/confirmation* |
+| [`-tmp/2026-10-28T09-48-18-108Z_01a181e9-133c-77f4-a44d-0d9f6757c0a8.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-28T09-48-18-108Z_01a181e9-133c-77f4-a44d-0d9f6757c0a8.jsonl) | `nvidia/nvidia/nemotron-3-ultra-550b-a55b` | **117** | 5017 | Intent: *NVIDIA config / model setup* |
+| [`-tmp/2026-10-23T22-25-26-764Z_01a16ade-76ec-741f-ae18-35b3107fe09d.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-23T22-25-26-764Z_01a16ade-76ec-741f-ae18-35b3107fe09d.jsonl) | `freeinference/glm-5.3-flash` | **112** | 4655 | Intent: *General agent work* |
+| [`-tmp/2026-10-30T02-25-24-800Z_01a18aa0-5140-701e-b8be-15334a1ce009.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-30T02-25-24-800Z_01a18aa0-5140-701e-b8be-15334a1ce009.jsonl) | `freeinference/glm-5.3-flash` | **102** | 7898 | Intent: *General agent work* |
+| [`-tmp/2026-10-28T20-58-57-421Z_01a1844f-140d-72d0-84c9-0b33a8a613c3.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-28T20-58-57-421Z_01a1844f-140d-72d0-84c9-0b33a8a613c3.jsonl) | `freeinference/deepseek-v4-flash` | **82** | 2782 | Intent: *General agent work* |
+| [`-tmp/2026-10-28T08-10-14-943Z_01a1818f-4e1f-712c-b8f1-e377943e39aa.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-28T08-10-14-943Z_01a1818f-4e1f-712c-b8f1-e377943e39aa.jsonl) | `nvidia/nvidia/nemotron-3-ultra-550b-a55b` | **78** | 3912 | Intent: *NVIDIA config / model setup* |
+| [`-tmp/2026-10-27T23-18-31-962Z_01a17fa8-811a-710c-94de-5deb4197fe60.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-27T23-18-31-962Z_01a17fa8-811a-710c-94de-5deb4197fe60.jsonl) | `rhodochrosite/models/gemini-flash-tool-retrieval` | **56** | 5546 | Intent: *General agent work* |
+| [`-tmp/2026-10-21T04-29-39-593Z_01a15cb8-d589-7499-beab-3b41ace5200e.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-21T04-29-39-593Z_01a15cb8-d589-7499-beab-3b41ace5200e.jsonl) | `google-antigravity/claude-opus-5-5-high` | **40** | 3667 | Intent: *General agent work* |
+| [`-tmp/2026-10-24T16-58-01-451Z_01a16ed9-0f6b-74de-8f2c-1226eb3104b0.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-24T16-58-01-451Z_01a16ed9-0f6b-74de-8f2c-1226eb3104b0.jsonl) | `freeinference/qwen3.6-35b` | **35** | 1084 | Intent: *General agent work* |
+| [`-tmp/2026-10-11T21-55-16-455Z_01a12cf6-8767-735c-82dd-7668788e3520.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-11T21-55-16-455Z_01a12cf6-8767-735c-82dd-7668788e3520.jsonl) | `cohere/command-a-plus-05-2026` | **33** | 1979 | Intent: *General agent work* |
+| [`-tmp/2026-10-30T22-00-43-302Z_01a18ed4-5826-7720-bf7c-741a608ff09a.jsonl`](https://github.com/toxicwind/Pens/blob/main/config/tau/agent/sessions/-tmp/2026-10-30T22-00-43-302Z_01a18ed4-5826-7720-bf7c-741a608ff09a.jsonl) | `openrouter/dots-studio/dots-3-note-preview:free` | **31** | 1534 | Intent: *DB setup/confirmation* |
 
 ---
 
@@ -91,7 +91,7 @@ Which models were most prone to phantom completions and syntax leaks:
 | `vercel-ai-gateway/minimax/minimax-m3-free` | 4 | **0** | 0 | 🟢 Reliable |
 | `zen/space-bunny-free` | 2 | **0** | 0 | 🟢 Reliable |
 | `nvidia/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` | 5 | **0** | 0 | 🟢 Reliable |
-| `rhodochrosite/estate/fast` | 2 | **0** | 0 | 🟢 Reliable |
+| `rhodochrosite/Pens/fast` | 2 | **0** | 0 | 🟢 Reliable |
 | `freeinference/minimax-m3.1-flash` | 9 | **0** | 0 | 🟢 Reliable |
 | `flock/nvidia/nemotron-3.5-super-vl-120b-a12b` | 2 | **0** | 0 | 🟢 Reliable |
 | `openrouter/liquid/lfm-2.5-2.6b:free` | 6 | **0** | 0 | 🟢 Reliable |

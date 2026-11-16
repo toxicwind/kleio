@@ -2,7 +2,7 @@
 
 > **The session historian** — one audit, every agent engine.
 
-Kleio (Κλειώ) — the Greek muse of history — audits sessions across the estate's
+Kleio (Κλειώ) — the Greek muse of history — audits sessions across the Pens's
 coding agents. One report covers **tau** (JSONL) and **kappa** (SQLite), with a
 provider architecture that makes a new session engine a one-file addition.
 
@@ -15,7 +15,7 @@ sessions in `~/.tau/agent/sessions/**/*.jsonl`, kappa rows inside
 1. **Split memories** — intent/completion questions answered differently per engine.
 2. **No cross-engine patterns** — phantom-todo detection, repeated-failure loops and
    model-churn ran on tau only; kappa rows carried `patterns: []`.
-3. **No plan tracking** — the estate runs todo-first, but nothing reconstructed
+3. **No plan tracking** — the Pens runs todo-first, but nothing reconstructed
    progress per session after the fact.
 
 Kleio merges them: **one report, one pattern library, one plan view.**
@@ -43,7 +43,7 @@ generator consume the same registry — no engine-specific logic anywhere else.
 ## Usage
 
 ```bash
-# CLI (standalone or through the estate symlink)
+# CLI (standalone or through the Pens symlink)
 /home/toxic/pens/olympus/products/kleio/helper/audit.ts --all
 kleio --check plan          # merged plan progress (tau-derived + kappa native todos)
 kleio --check failures      # repeated failure loops by error snippet

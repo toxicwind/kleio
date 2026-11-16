@@ -19,7 +19,7 @@ export interface AuditedSession {
 	types: Map<string, number>;
 }
 
-const GITHUB_BLOB_BASE = "https://github.com/toxicwind/estate/blob/main/";
+const GITHUB_BLOB_BASE = "https://github.com/toxicwind/Pens/blob/main/";
 
 export function generateMarkdownReport(
 	sessions: AuditedSession[],
@@ -90,7 +90,7 @@ export function generateMarkdownReport(
 	lines.push(
 		`- **Critical Anomalies Detected**: \`${criticalSessions.length}\` sessions had critical severity pattern violations.`,
 	);
-	if (existsSync(join("/home/toxic/pens/estate", "projects/toxicwind"))) {
+	if (existsSync(join("/home/toxic/pens/Pens", "projects/toxicwind"))) {
 		lines.push(
 			`- **Monorepo Structural Finding**: \`projects/toxicwind/\` was created by confused models misinterpreting the username as a package namespace. Intended shared utilities belong under \`packages/utils\`.`,
 		);
@@ -186,7 +186,7 @@ export function generateMarkdownReport(
 		"> Live-computed at report time — only emitted when observed on disk.",
 	);
 	lines.push("");
-	const exists = (rel: string) => existsSync(join("/home/toxic/pens/estate", rel));
+	const exists = (rel: string) => existsSync(join("/home/toxic/pens/Pens", rel));
 	const findings: string[] = [];
 	if (exists("projects/toxicwind")) {
 		findings.push(

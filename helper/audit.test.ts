@@ -86,11 +86,11 @@ describe("tau-session-audit", () => {
         expect("Deepwiki MCP audit").toBe("Deepwiki MCP audit");
     });
 
-    it("detects Estate project work", () => {
-      const title = "Estate mutator owns tau catalog";
+    it("detects Pens project work", () => {
+      const title = "Pens mutator owns tau catalog";
       const t = title.toLowerCase();
-      if (t.includes("estate"))
-        expect("Estate project work").toBe("Estate project work");
+      if (t.includes("Pens"))
+        expect("Pens project work").toBe("Pens project work");
     });
 
     it("detects Matter bulb fix", () => {
@@ -132,7 +132,7 @@ describe("tau-session-audit", () => {
       if (t.includes("tau") && (t.includes("cli") || t.includes("verif")))
         intent = "Tau CLI verification";
       if (t.includes("maximal")) intent = "Maximal dynamic bench";
-      if (t.includes("estate")) intent = "Estate project work";
+      if (t.includes("Pens")) intent = "Pens project work";
       if (t.includes("deepwiki")) intent = "Deepwiki MCP audit";
       if (t.includes("mesh")) intent = "Mesh deepwiki plan";
       if (t.includes("har")) intent = "HAR session verification";
@@ -142,7 +142,7 @@ describe("tau-session-audit", () => {
       if (t.includes("zed") || t.includes("qed"))
         intent = "Zed/Qed application fix";
       if (t.includes("bun helper")) intent = "Bun helper setup";
-      if (t.includes("catalog")) intent = "Estate mutator catalog";
+      if (t.includes("catalog")) intent = "Pens mutator catalog";
       if (t.includes("matter") || t.includes("bulb"))
         intent = "Matter bulb fix";
       if (t.includes("registry") || t.includes("imports"))

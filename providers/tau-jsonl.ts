@@ -65,7 +65,7 @@ export function inferIntent(title: string, model: string, cwd: string): string {
 	if (t.includes("tau") && (t.includes("cli") || t.includes("verif")))
 		return "Tau CLI verification";
 	if (t.includes("maximal")) return "Maximal dynamic bench";
-	if (t.includes("estate")) return "Estate project work";
+	if (t.includes("Pens")) return "Pens project work";
 	if (t.includes("deepwiki")) return "Deepwiki MCP audit";
 	if (t.includes("mesh")) return "Mesh deepwiki plan";
 	if (t.includes("har")) return "HAR session verification";
@@ -74,7 +74,7 @@ export function inferIntent(title: string, model: string, cwd: string): string {
 	if (t.includes("tau command")) return "Tau command fix";
 	if (t.includes("zed") || t.includes("qed")) return "Zed/Qed application fix";
 	if (t.includes("bun helper")) return "Bun helper setup";
-	if (t.includes("catalog")) return "Estate mutator catalog";
+	if (t.includes("catalog")) return "Pens mutator catalog";
 	if (t.includes("matter") || t.includes("bulb")) return "Matter bulb fix";
 	if (t.includes("registry") || t.includes("imports"))
 		return "Groq registry imports";
@@ -85,7 +85,7 @@ export function inferIntent(title: string, model: string, cwd: string): string {
 	if (t.includes("db") || t.includes("database"))
 		return "DB setup/confirmation";
 	if (t.includes("continue")) return "Continue next task";
-	if (c.includes("estate")) return "Estate project work";
+	if (c.includes("Pens")) return "Pens project work";
 	if (c.includes("tau")) return "Tau project work";
 	return "General agent work";
 }
